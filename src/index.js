@@ -1,9 +1,7 @@
-import './css/main.css';
+import React from 'react';
 import './scss/main.scss';
-import Log from './log';
-import Calc from './calc';
 
-const calc = new Calc();
-const log = new Log();
+import SwapiDB from './swapi-db';
 
-log.log(calc.add(1, 2, 3));
+
+const Swapi = new SwapiDB();

@@ -7,5 +7,6 @@
       "debug": true,
       "modules": false
     }],
-    "@babel/react"]
+    "@babel/react"],
+    "plugins": ["react-hot-loader/babel", "@babel/transform-runtime"]
 }
