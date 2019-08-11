@@ -1,0 +1,14 @@
+@import 'utils/libs';
+@import 'utils/vars';
+@import 'utils/mixins';
+@import 'utils/fonts';
+
+html {
+  line-height: $mainLineHeight;
+  font-size: $mainFontSize;
+  color: $mainFontColor;
+  font-family: $mainFont;
+  min-height: 100vh;
+}
+
+@import 'modules/wrapper.scss';
