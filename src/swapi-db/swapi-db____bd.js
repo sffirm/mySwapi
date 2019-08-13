@@ -9,22 +9,6 @@ export default class SwapiDB {
     return link.match(idRegExp)[1];
   }
 
-  getShortData(data, category) {
-    const dataName = {};
-    if (data.title) {
-      dataName.title = data.title;
-    } 
-    if (data.name) {
-      dataName.name = data.name;
-    }
-    return {
-      url: data.url,
-      id: this.getIdLink(data.url),
-      category,
-      ... dataName
-    }
-  }
-
   async getResource(url) {
     const result = await fetch(`${this.apiLink}${url}`);
     if (!result.ok) {
@@ -63,7 +47,6 @@ export default class SwapiDB {
 
   async getPerson(id) {
     const person = await this.getResource(`/people/${id}/`);
-
     return this.transformPerson(person);
   }
 
@@ -98,40 +81,20 @@ export default class SwapiDB {
     return this.getResource(`/films/${id}/`);
   }
 
+  
   async transformPerson(person) {
-    let films = await this.fetchUrls(person.films);
-    let starships = await this.fetchUrls(person.starships);
-    let species = await this.fetchUrls(person.species);
-    let vehicles = await this.fetchUrls(person.vehicles);
-    const homeWorld = await this.fetchUrls([person.homeworld]);
-    films = films.map((item) => { 
-      return this.getShortData(item, 'films');
-    });
-    starships = starships.map((item) => { 
-      return this.getShortData(item, 'starships');
-    });
-    species = species.map((item) => { 
-      return this.getShortData(item, 'species');
-    });
-    vehicles = vehicles.map((item) => { 
-      return this.getShortData(item, 'vehicles');
-    });
-    return [
-      {value: person.name, title: 'Name'},
-      {value: person.birth_year, title: 'Birth Year'},
-      {value: person.gender, title: 'Gender'},
-      {value: person.height, title: 'Height'},
-      {value: person.mass, title: 'Weight'},
-      {value: person.eye_color, title: 'Eye Color'},
-      {value: person.hair_color, title: 'Hair Color'},
-      {value: person.skin_color, title: 'Skin Color'},
-      {value: films, title: 'Films'},
-      {value: vehicles, title: 'Vehicles'},
-      {value: starships, title: 'Starships'},
-      {value: species, title: 'Species'},
-      {value: homeWorld, title: 'Home World'},
-      
-    ]
+    const films = await this.fetchUrls(person.films);
+    console.log(films);
+    return {
+      name: person.name,
+      birthYear: person.birth_year,
+      gender: person.gender,
+      height: person.height,
+      weight: person.mass,
+      eyeColor: person.eye_color,
+      hairColor: person.hair_color,
+      skinColor: person.skin_color,
+    }
   }
 
   transformPlanet(planet) {
