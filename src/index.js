@@ -1,7 +1,7 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import './scss/main.scss';
 
-import SwapiDB from './swapi-db';
+import App from './components/app';
 
-
-const Swapi = new SwapiDB();
+ReactDOM.render(<App />, document.getElementById('root'))
