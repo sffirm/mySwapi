@@ -55,12 +55,28 @@ export default class SwapiDB {
   }
 
   async getAllPeople() {
-    const resultPeople = await this.getResource(`/people/`);
-    const result = resultPeople.results.map((item) => {
-      return this.transformAllPerson(item);
-    })
+    const result = await this.getResource(`/people/`);
 
-    return await result;
+    const request = (item) => {
+      return new Promise((resolve, reject) => {
+        try {
+          resolve(this.transformPerson(item));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const results = await Promise.all(result.results.map(item => request(item)
+      .then(data => {
+        return data;
+      })
+      .catch(data => {
+        throw new Error(`${data.status}`);
+      })
+    ))
+
+    return await results;
   }
 
   async getPerson(id) {
@@ -120,7 +136,7 @@ export default class SwapiDB {
     });
     return {
       name: person.name,
-      personId: this.getIdLink(person.url),
+      id: this.getIdLink(person.url),
       details: [{
           value: person.name,
           title: 'Name'
@@ -174,13 +190,6 @@ export default class SwapiDB {
           title: 'Species'
         },
       ]
-    }
-  }
-
-  transformAllPerson(person) {
-    return {
-      name: person.name,
-      id: this.getIdLink(person.url),
     }
   }
 

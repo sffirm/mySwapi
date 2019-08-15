@@ -12,7 +12,7 @@ export default class PersonDesc extends Component {
     this.state = {
       personData: {
         name: null,
-        id: null,
+        personId: null,
         details: [
           {value: null, title: 'Name'},
           {value: null, title: 'Birth Year'},
@@ -29,21 +29,37 @@ export default class PersonDesc extends Component {
           {value: null, title: 'Species'},
         ]
       },
+      selected: false,
       loading: false
     }
   }
 
   componentDidMount() {
     this.SwapiDB = new SwapiDB();
-    this.updatePerson(1);
+    this.updatePerson();
   }
 
-  updatePerson(id) {
+  componentDidUpdate(prevProps) {
+    if (this.props.personId !== prevProps.personId) {
+      this.setState({
+        loading: false,
+        selected: true,
+      })
+      this.updatePerson();
+    }
+  }
+
+  updatePerson() {
+    const { personId } = this.props;
+    if (!personId) {
+      return false;
+    }
     
-    this.SwapiDB.getPerson(id).then( (data) => {
+    this.SwapiDB.getPerson(personId).then( (data) => {
       this.setState({
         personData: data,
-        loading: true
+        loading: true,
+        selected: true
       })
     });
 
@@ -69,13 +85,21 @@ export default class PersonDesc extends Component {
 
   render() {
 
-    const { personData: {details}, loading } = this.state;
+    const { personData: {details}, loading, selected } = this.state;
 
-    const items = this.renderItems(details);
+    if (!selected) {
+      return (
+        <div className="person-desc">
+          <div className="charecter_not_choose">Select a character from the list.</div>
+        </div>
+      )
+    }
 
     if (!loading) {
       return <Preloader />
     }
+
+    const items = this.renderItems(details);
 
     return (
       <div className="person-desc">

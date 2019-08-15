@@ -30,12 +30,16 @@ export default class ItemList extends Component {
   }
 
   renderItems(data) {
-    return data.map((item) => {
+    return data.map(({id, name}) => {
       return (
         <a href="#" 
         className="list-group-item list-group-item-action"
-        key={ item.id }>
-        { item.name }</a>
+        key={ id }
+        onClick={(e)=> {
+          e.preventDefault();
+          this.props.onItemSelected(id)
+          }}>
+        { name }</a>
       )
     });
   }

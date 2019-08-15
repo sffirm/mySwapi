@@ -11,7 +11,16 @@ export default class App extends Component{
 
   constructor() {
     super();
+    this.state = {
+      selectedPerson: null
+    }
+    this.onPersonSelected = (id) => {
+      this.setState({
+        selectedPerson: id
+      })
+    }
   }
+
 
 
   render() {
@@ -22,10 +31,10 @@ export default class App extends Component{
           <div className='container-fluid'>
             <div className="row">
               <div className="col-sm-5 col-md-4">
-                <ItemList />
+                <ItemList onItemSelected={ this.onPersonSelected } />
               </div>
               <div className="col-sm-7 col-md-8">
-                <PersonDesc />
+                <PersonDesc personId={ this.state.selectedPerson } />
               </div>
             </div>
           </div>
