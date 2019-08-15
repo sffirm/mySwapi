@@ -4,6 +4,7 @@ import './person-desc.scss';
 
 import SwapiDB from '../../swapi-db'
 import PersonDescItem from './person-desc-item';
+import Preloader from '../preloader'
 
 export default class PersonDesc extends Component {
   constructor() {
@@ -27,7 +28,8 @@ export default class PersonDesc extends Component {
           {value: null, title: 'Starships'},
           {value: null, title: 'Species'},
         ]
-      }
+      },
+      loading: false
     }
   }
 
@@ -40,7 +42,8 @@ export default class PersonDesc extends Component {
     
     this.SwapiDB.getPerson(id).then( (data) => {
       this.setState({
-        personData: data
+        personData: data,
+        loading: true
       })
     });
 
@@ -49,7 +52,7 @@ export default class PersonDesc extends Component {
   updateHomeWorld(link) {
     const id = this.SwapiDB.getIdLink(link);
     return this.SwapiDB.getPlanet(id).then((data) => {
-      return data.name
+      return data.name;
     });
   }
 
@@ -66,9 +69,13 @@ export default class PersonDesc extends Component {
 
   render() {
 
-    const { details } = this.state.personData
+    const { personData: {details}, loading } = this.state;
 
     const items = this.renderItems(details);
+
+    if (!loading) {
+      return <Preloader />
+    }
 
     return (
       <div className="person-desc">

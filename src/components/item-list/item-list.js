@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import SwapiDB from '../../swapi-db';
 
 import './item-list.scss';
+import Preloader from '../preloader';
 
 export default class ItemList extends Component {
   constructor() {
     super();
     this.state = {
-      peopleList: null
+      peopleList: null,
+      loading: false
     }
   }
 
@@ -21,13 +23,13 @@ export default class ItemList extends Component {
     this.SwapiDB.getAllPeople()
         .then((peopleList) => {
           this.setState({
-            peopleList
+            peopleList,
+            loading: true
           })
         });
   }
 
   renderItems(data) {
-    console.log(data)
     return data.map((item) => {
       return (
         <a href="#" 
@@ -39,13 +41,10 @@ export default class ItemList extends Component {
   }
 
   render() {
-    const { peopleList } = this.state;
-    console.log(this.state);
+    const { peopleList, loading } = this.state;
 
-    if ( !peopleList ) {
-      return (
-        <div>test</div>
-      )
+    if ( !loading ) {
+      return <Preloader />
     }
 
     this.renderItems(peopleList);
