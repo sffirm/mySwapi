@@ -5,4 +5,16 @@
     display: block;
     margin-right: 0.8rem;
   }
+  .item-desc{
+    margin-right: 10px;
+    &:last-child{
+      margin-right: 0;
+      &:after{
+        content: "";
+      }
+    }
+    &:after{
+      content: ",";
+    }
+  }
 }

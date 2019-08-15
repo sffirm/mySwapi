@@ -13,7 +13,7 @@ export default class SwapiDB {
     const dataName = {};
     if (data.title) {
       dataName.title = data.title;
-    } 
+    }
     if (data.name) {
       dataName.name = data.name;
     }
@@ -21,7 +21,7 @@ export default class SwapiDB {
       url: data.url,
       id: this.getIdLink(data.url),
       category,
-      ... dataName
+      ...dataName
     }
   }
 
@@ -37,7 +37,7 @@ export default class SwapiDB {
     const request = (url, data = []) => {
       return new Promise((resolve, reject) => {
         try {
-          resolve( fetch(url) );
+          resolve(fetch(url));
         } catch (error) {
           reject(error);
         }
@@ -45,20 +45,38 @@ export default class SwapiDB {
     };
 
     return Promise.all(urls.map(url => request(url)
-        .then( data => {
-            return data.json();
-          }	
-        )
-        .catch (data => {
-          throw new Error(`No data was found at ${url}, received ${data.status}`);
-        })
-      )
-    ) 
+      .then(data => {
+        return data.json();
+      })
+      .catch(data => {
+        throw new Error(`No data was found at ${url}, received ${data.status}`);
+      })
+    ))
   }
 
   async getAllPeople() {
     const result = await this.getResource(`/people/`);
-    return result.results;
+
+    const request = (item) => {
+      return new Promise((resolve, reject) => {
+        try {
+          resolve(this.transformPerson(item));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const results = await Promise.all(result.results.map(item => request(item)
+      .then(data => {
+        return data;
+      })
+      .catch(data => {
+        throw new Error(`${data.status}`);
+      })
+    ))
+
+    return await results;
   }
 
   async getPerson(id) {
@@ -104,34 +122,75 @@ export default class SwapiDB {
     let species = await this.fetchUrls(person.species);
     let vehicles = await this.fetchUrls(person.vehicles);
     const homeWorld = await this.fetchUrls([person.homeworld]);
-    films = films.map((item) => { 
+    films = films.map((item) => {
       return this.getShortData(item, 'films');
     });
-    starships = starships.map((item) => { 
+    starships = starships.map((item) => {
       return this.getShortData(item, 'starships');
     });
-    species = species.map((item) => { 
+    species = species.map((item) => {
       return this.getShortData(item, 'species');
     });
-    vehicles = vehicles.map((item) => { 
+    vehicles = vehicles.map((item) => {
       return this.getShortData(item, 'vehicles');
     });
-    return [
-      {value: person.name, title: 'Name'},
-      {value: person.birth_year, title: 'Birth Year'},
-      {value: person.gender, title: 'Gender'},
-      {value: person.height, title: 'Height'},
-      {value: person.mass, title: 'Weight'},
-      {value: person.eye_color, title: 'Eye Color'},
-      {value: person.hair_color, title: 'Hair Color'},
-      {value: person.skin_color, title: 'Skin Color'},
-      {value: films, title: 'Films'},
-      {value: vehicles, title: 'Vehicles'},
-      {value: starships, title: 'Starships'},
-      {value: species, title: 'Species'},
-      {value: homeWorld, title: 'Home World'},
-      
-    ]
+    return {
+      name: person.name,
+      id: this.getIdLink(person.url),
+      details: [{
+          value: person.name,
+          title: 'Name'
+        },
+        {
+          value: person.birth_year,
+          title: 'Birth Year'
+        },
+        {
+          value: person.gender,
+          title: 'Gender'
+        },
+        {
+          value: person.height,
+          title: 'Height'
+        },
+        {
+          value: person.mass,
+          title: 'Weight'
+        },
+        {
+          value: person.eye_color,
+          title: 'Eye Color'
+        },
+        {
+          value: person.hair_color,
+          title: 'Hair Color'
+        },
+        {
+          value: person.skin_color,
+          title: 'Skin Color'
+        },
+        {
+          value: homeWorld,
+          title: 'Home World'
+        },
+        {
+          value: films,
+          title: 'Films'
+        },
+        {
+          value: vehicles,
+          title: 'Vehicles'
+        },
+        {
+          value: starships,
+          title: 'Starships'
+        },
+        {
+          value: species,
+          title: 'Species'
+        },
+      ]
+    }
   }
 
   transformPlanet(planet) {

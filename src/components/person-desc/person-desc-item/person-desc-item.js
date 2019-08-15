@@ -7,8 +7,6 @@ export default class PersonDescItem extends Component {
   }
 
   createItemList(content) {
-    console.log(content)
-
     if (content === null) {
       return false;
     }
@@ -20,17 +18,10 @@ export default class PersonDescItem extends Component {
     if (typeof content === 'object') {
       return content.map((item, i) => {
         const name = item.title ? item.title : item.name;
-        if ((content.length - 1) === i) {
-          return (
-            <Fragment>
-              <a data-id={item.id} data-category={item.category} href="#">{ name }</a>
-            </Fragment>
-          )
-        }
         return (
-          <Fragment>
-            <a data-id={item.id} data-category={item.category} href="#">{ name }</a>{', '}
-          </Fragment>
+          <span className="item-desc" key={ i }>
+            <a data-id={item.id} data-category={item.category} href="#">{ name }</a>
+          </span>
         )
       })
     }
