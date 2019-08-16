@@ -31,11 +31,12 @@ export default class PersonDesc extends Component {
       },
       selected: false,
       loading: false
-    }
+    };
+    this.personsDB = {};
+    this.SwapiDB = new SwapiDB();
   }
 
   componentDidMount() {
-    this.SwapiDB = new SwapiDB();
     this.updatePerson();
   }
 
@@ -54,15 +55,23 @@ export default class PersonDesc extends Component {
     if (!personId) {
       return false;
     }
-    
-    this.SwapiDB.getPerson(personId).then( (data) => {
+
+    if (this.personsDB[personId]) {
       this.setState({
-        personData: data,
+        personData: this.personsDB[personId],
         loading: true,
         selected: true
       })
-    });
-
+    } else {
+      this.SwapiDB.getPerson(personId).then( (data) => {
+        this.personsDB[personId] = data;
+        this.setState({
+          personData: data,
+          loading: true,
+          selected: true
+        })
+      });
+    }
   }
 
   updateHomeWorld(link) {

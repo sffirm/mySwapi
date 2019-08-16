@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import SwapiDB from '../../swapi-db';
-
 import './item-list.scss';
 import Preloader from '../preloader';
 
@@ -9,54 +7,51 @@ export default class ItemList extends Component {
   constructor() {
     super();
     this.state = {
-      peopleList: null,
+      itemList: null,
       loading: false
     }
   }
 
   componentDidMount() {
-    this.SwapiDB = new SwapiDB();
-    this.updateItems();
-  }
-
-  async updateItems() {
-    this.SwapiDB.getAllPeople()
-        .then((peopleList) => {
-          this.setState({
-            peopleList,
-            loading: true
-          })
-        });
+    const { getData } = this.props;
+    getData().then((itemList) => {
+      this.setState({
+        itemList,
+        loading: true
+      })
+    });
   }
 
   renderItems(data) {
-    return data.map(({id, name}) => {
+    return data.map((item) => {
+      const { id } = item;
+      const label = this.props.renderItem(item);
       return (
         <a href="#" 
         className="list-group-item list-group-item-action"
         key={ id }
-        onClick={(e)=> {
+        onClick={(e) => {
           e.preventDefault();
           this.props.onItemSelected(id)
           }}>
-        { name }</a>
+        { label }</a>
       )
     });
   }
 
   render() {
-    const { peopleList, loading } = this.state;
+    const { itemList, loading } = this.state;
 
     if ( !loading ) {
       return <Preloader />
     }
 
-    this.renderItems(peopleList);
-    const items = this.renderItems(peopleList);
+    this.renderItems(itemList);
+    const items = this.renderItems(itemList);
 
 
     return (
-      <div className="item-list">
+      <div className="item-list item-menu">
         <div className="list-group">
           { items }
         </div>

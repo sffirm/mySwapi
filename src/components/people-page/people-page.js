@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
 import PersonDesc from '../person-desc';
 import ItemList from '../item-list';
 import ErrorComponent from '../error-componen';
+import SwapiDB from '../../swapi-db';
+import MainContain from '../main-contain'
 
 export  default class PeoplePage extends Component {
   constructor() {
@@ -16,7 +18,9 @@ export  default class PeoplePage extends Component {
         selectedPerson: id
       })
     }
+    this.SwapiDB = new SwapiDB();
   }
+
 
   componentDidCatch() {
     this.setState({
@@ -25,25 +29,31 @@ export  default class PeoplePage extends Component {
   }
 
   render() {
-
     const { error } = this.state;
     if (error) {
       return <ErrorComponent />
     }
 
+    const itemList = (<ItemList 
+                      onItemSelected={ this.onPersonSelected }
+                      getData={ this.SwapiDB.getAllPeople }
+                      renderItem={(item) => {
+                        return(
+                          <span className="d-flex justify-content-between">
+                            <span className="item-title">{ item.name }</span>
+                            <span className="item-desc">({ item.gender })</span>
+                          </span>
+                        )
+                      }}/>)
+
+    const personDesc = (<PersonDesc personId={ this.state.selectedPerson } />);
+
+
     return (
-        <main className='main'>
-          <div className='container-fluid'>
-            <div className="row">
-              <div className="col-sm-5 col-md-4">
-                <ItemList onItemSelected={ this.onPersonSelected } />
-              </div>
-              <div className="col-sm-7 col-md-8">
-                <PersonDesc personId={ this.state.selectedPerson } />
-              </div>
-            </div>
-          </div>
-        </main>
+      <MainContain 
+        leftSide={ itemList }
+        rightSide={ personDesc }
+      />
     )
   }
 }

@@ -6,7 +6,8 @@
       "useBuiltIns" : "usage",
       "debug": true,
       "modules": false
-    }],
+    },
+    "stage-2"],
     "@babel/react"],
     "plugins": ["react-hot-loader/babel", "@babel/transform-runtime"]
 }

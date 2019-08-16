@@ -1,7 +1,24 @@
+
 export default class SwapiDB {
 
   constructor() {
     this.apiLink = 'https://swapi.co/api';
+    this.getIdLink = this.getIdLink.bind(this);
+    this.getShortData = this.getShortData.bind(this);
+    this.getResource = this.getResource.bind(this);
+    this.fetchUrls = this.fetchUrls.bind(this);
+    this.getAllPeople = this.getAllPeople.bind(this);
+    this.getPerson = this.getPerson.bind(this);
+    this.getAllPlanets = this.getAllPlanets.bind(this);
+    this.getPlanet = this.getPlanet.bind(this);
+    this.getAllStarships = this.getAllStarships.bind(this);
+    this.getStarship = this.getStarship.bind(this);
+    this.getVehicles = this.getVehicles.bind(this);
+    this.getSpecies = this.getSpecies.bind(this);
+    this.getFilms = this.getFilms.bind(this);
+    this.transformPerson = this.transformPerson.bind(this);
+    this.transformAllPersons = this.transformAllPersons.bind(this);
+    this.transformPlanet = this.transformPlanet.bind(this);
   }
 
   getIdLink(link) {
@@ -57,7 +74,7 @@ export default class SwapiDB {
   async getAllPeople() {
     const resultPeople = await this.getResource(`/people/`);
     const result = resultPeople.results.map((item) => {
-      return this.transformAllPerson(item);
+      return this.transformAllPersons(item);
     })
 
     return await result;
@@ -65,7 +82,6 @@ export default class SwapiDB {
 
   async getPerson(id) {
     const person = await this.getResource(`/people/${id}/`);
-
     return this.transformPerson(person);
   }
 
@@ -177,9 +193,10 @@ export default class SwapiDB {
     }
   }
 
-  transformAllPerson(person) {
+  transformAllPersons(person) {
     return {
       name: person.name,
+      gender: person.gender,
       id: this.getIdLink(person.url),
     }
   }
