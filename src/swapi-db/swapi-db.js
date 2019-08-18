@@ -136,7 +136,7 @@ export default class SwapiDB {
     });
     return {
       name: person.name,
-      personId: this.getIdLink(person.url),
+      id: this.getIdLink(person.url),
       details: [{
           value: person.name,
           title: 'Name'
