@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import './item-list.scss';
 import Preloader from '../preloader';
@@ -24,17 +25,16 @@ export default class ItemList extends Component {
 
   renderItems(data) {
     return data.map((item) => {
-      const { id } = item;
+      const { id, type } = item;
       const label = this.props.renderItem(item);
       return (
-        <a href="#" 
+        <Link to={ `/${type}/${id}` }
         className="list-group-item list-group-item-action"
         key={ id }
-        onClick={(e) => {
-          e.preventDefault();
+        onClick={() => {
           this.props.onItemSelected(id)
           }}>
-        { label }</a>
+        { label }</Link>
       )
     });
   }

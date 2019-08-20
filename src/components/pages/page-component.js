@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import ErrorComponent from '../error-componen';
-import MainContain from '../main-contain'
+import { MainContain } from '../main-contain';
 
 const PageComponent = (props) => {
 
@@ -11,10 +11,13 @@ const PageComponent = (props) => {
   }
 
   return (
-    <MainContain 
-      leftSide={ props.itemList }
-      rightSide={ props.itemDetails }
-    />
+    <Fragment>
+      <MainContain 
+        title={ props.title }
+        leftSide={ props.itemList }
+        rightSide={ props.itemDetails }
+      />
+    </Fragment>
   )
 }
 

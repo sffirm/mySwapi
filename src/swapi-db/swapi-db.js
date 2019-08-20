@@ -244,6 +244,7 @@ export default class SwapiDB {
       name: person.name,
       gender: person.gender,
       id: this.getIdLink(person.url),
+      type: 'people'
     }
   }
 
@@ -302,6 +303,7 @@ export default class SwapiDB {
       name: planet.name,
       climate: planet.climate,
       id: this.getIdLink(planet.url),
+      type: 'planets'
     }
   }
 
@@ -369,6 +371,7 @@ export default class SwapiDB {
       name: starship.name,
       length: starship.length,
       id: this.getIdLink(starship.url),
+      type: 'starships'
     }
   }
 
@@ -433,6 +436,7 @@ export default class SwapiDB {
       name: vehicle.name,
       length: vehicle.length,
       id: this.getIdLink(vehicle.url),
+      type: 'vehicles'
     }
   }
 
@@ -495,6 +499,7 @@ export default class SwapiDB {
       name: species.name,
       skinColor: species.skin_colors,
       id: this.getIdLink(species.url),
+      type: 'species'
     }
   }
 
@@ -559,6 +564,7 @@ export default class SwapiDB {
       name: film.title,
       releaseDate: film.release_date,
       id: this.getIdLink(film.url),
+      type: 'films'
     }
   }
 

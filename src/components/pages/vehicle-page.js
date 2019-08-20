@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import PageComponent from './page-component';
 import ItemDetails from '../item-details';
 import ItemList from '../item-list';
 import SwapiDB from '../../swapi-db';
 
-export default class VehiclePage extends Component {
+class VehiclePage extends Component {
   constructor() {
     super();
     this.state = {
-      selectedElem: null,
       error: false
-    }
-    this.onElemSelected = (id) => {
-      this.setState({
-        selectedElem: id
-      })
     }
     this.SwapiDB = new SwapiDB();
   }
@@ -25,10 +20,12 @@ export default class VehiclePage extends Component {
       error: true
     })
   }
+
   render() {
-    
+    const { id } = this.props.match.params;
+    const { history } = this.props;
     const itemList = (<ItemList 
-      onItemSelected={ this.onElemSelected }
+      onItemSelected={ (id) => {return history.push(id)} }
       getData={ this.SwapiDB.getAllVehicles }
       renderItem={(item) => {
         return(
@@ -40,17 +37,19 @@ export default class VehiclePage extends Component {
     }}/>)
 
     const itemDetails = (<ItemDetails 
-      id={ this.state.selectedElem } 
+      id={ id } 
       getData={ this.SwapiDB.getVehicle }
       />);
 
     return(
       <PageComponent 
+        title="Vehicles"
         itemDetails={ itemDetails }
         itemList={ itemList }
         error={ this.state.error }
       />
     )
   }
-
 }
+
+export default withRouter(VehiclePage);

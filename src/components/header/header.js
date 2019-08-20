@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Link } from 'react-router-dom';
 
 import SwapiDB from '../../swapi-db';
 
@@ -34,7 +35,7 @@ export default class Header extends Component {
       let clazz = 'nav-item';
       return (
         <li key={ index } className={ clazz }>
-          <a href="#" className="nav-link">{ elem }</a>
+          <Link to={ '/' + elem + '/' } className="nav-link">{ elem }</Link>
         </li>
       )
     })
@@ -51,7 +52,7 @@ export default class Header extends Component {
         <div className="container-fluid">
           <div className="row align-items-center">
             <div className="col-sm-5 col-md-4">
-              <h1>myStarwars</h1>
+              <Link to="/" className="logo">myStarwars</Link>
             </div>
             <div className="col-sm-7 col-md-8">
               <nav className="navbar navbar-expand-sm navbar-light">

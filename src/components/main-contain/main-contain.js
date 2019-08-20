@@ -1,10 +1,15 @@
 import React from 'react';
 
-const MainContain = ({ leftSide, rightSide }) => {
+import './main-contain.scss'
+
+const MainContain = ({ leftSide, rightSide, title }) => {
   return (
     <main className='main'>
       <div className='container-fluid'>
         <div className="row">
+          <div className="col-12">
+            <div className="title-text">{ title }</div>
+          </div>
           <div className="col-sm-5 col-md-4">
             { leftSide }
           </div>

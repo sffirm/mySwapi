@@ -34,6 +34,10 @@ export default class ItemDetails extends Component {
   updateDetails() {
     const { id } = this.props;
     if (!id) {
+      this.setState({
+        loading: false,
+        selected: false,
+        })
       return false;
     }
 
@@ -64,7 +68,7 @@ export default class ItemDetails extends Component {
     if (!selected) {
       return (
         <div className="item-details">
-          <div className="charecter_not_choose">Select a character from the list.</div>
+          <div className="charecter_not_choose">Select a item from the list.</div>
         </div>
       )
     }

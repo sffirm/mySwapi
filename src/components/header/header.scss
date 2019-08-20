@@ -11,7 +11,15 @@
   .navbar-nav{
     width: 100%;
   }
-  h1 {
+  .logo {
     margin-bottom: 0;
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: rgb(20, 10, 117);
+    transition: 100ms;
+    &:hover{
+      color: rgb(9, 57, 187);
+      text-decoration: none;
+    }
   }
 }

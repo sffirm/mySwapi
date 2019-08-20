@@ -1,3 +1,4 @@
 import MainContain from './main-contain';
+import MainContainStart from './main-contain-start';
 
-export default MainContain;
+export { MainContain, MainContainStart };

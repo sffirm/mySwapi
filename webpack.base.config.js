@@ -24,6 +24,9 @@ module.exports = {
     path: PATHS.dist,
     publicPath: '/'
   },
+  devServer: {
+    historyApiFallback: true,
+  },
   module: {
     rules: [{
       test: /\.js$/,

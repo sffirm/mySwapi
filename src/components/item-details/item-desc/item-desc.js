@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 const createItemList = (content) => {
   if (content === null) {
@@ -14,7 +15,7 @@ const createItemList = (content) => {
       const name = item.title ? item.title : item.name;
       return (
         <span className="item-desc" key={ i }>
-          <a data-id={item.id} data-category={item.category} href="#">{ name }</a>
+          <Link to={ `/${item.category}/${item.id}` }>{ name }</Link>
         </span>
       )
     })

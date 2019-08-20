@@ -4,6 +4,7 @@ import StarshipPage from './starship-page';
 import VehiclePage from './vehicle-page';
 import SpeciesPage from './species-page';
 import FilmPage from './film-page';
+import StartPage from './start-page';
 
 export { 
           PeoplePage,
@@ -11,5 +12,6 @@ export {
           StarshipPage,
           VehiclePage,
           SpeciesPage,
-          FilmPage
+          FilmPage,
+          StartPage
         };
