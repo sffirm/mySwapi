@@ -13,12 +13,24 @@ export default class SwapiDB {
     this.getPlanet = this.getPlanet.bind(this);
     this.getAllStarships = this.getAllStarships.bind(this);
     this.getStarship = this.getStarship.bind(this);
-    this.getVehicles = this.getVehicles.bind(this);
+    this.getAllVehicles = this.getAllVehicles.bind(this);
+    this.getVehicle = this.getVehicle.bind(this);
+    this.getAllSpecies = this.getAllSpecies.bind(this);
     this.getSpecies = this.getSpecies.bind(this);
-    this.getFilms = this.getFilms.bind(this);
+    this.getAllFilms = this.getAllFilms.bind(this);
+    this.getFilm = this.getFilm.bind(this);
     this.transformPerson = this.transformPerson.bind(this);
     this.transformAllPersons = this.transformAllPersons.bind(this);
     this.transformPlanet = this.transformPlanet.bind(this);
+    this.transformAllPlanets = this.transformAllPlanets.bind(this);
+    this.transformStarship = this.transformStarship.bind(this);
+    this.transformAllStarships = this.transformAllStarships.bind(this);
+    this.transformVehicle = this.transformVehicle.bind(this);
+    this.transformAllVehicles = this.transformAllVehicles.bind(this);
+    this.transformSpecies = this.transformSpecies.bind(this);
+    this.transformAllSpecies = this.transformAllSpecies.bind(this);
+    this.transformFilm = this.transformFilm.bind(this);
+    this.transformAllFilms = this.transformAllFilms.bind(this);
   }
 
   getIdLink(link) {
@@ -86,8 +98,11 @@ export default class SwapiDB {
   }
 
   async getAllPlanets() {
-    const result = await this.getResource(`/planets/`);
-    return result.results;
+    const resultPlanet = await this.getResource(`/planets/`);
+    const result = resultPlanet.results.map((item) => {
+      return this.transformAllPlanets(item);
+    })
+    return result;
   }
 
   async getPlanet(id) {
@@ -96,24 +111,57 @@ export default class SwapiDB {
   }
 
   async getAllStarships() {
-    const result = await this.getResource(`/starships/`);
-    return result.results;
+    const resultStarship = await this.getResource(`/starships/`);
+    const result = resultStarship.results.map((item) => {
+      return this.transformAllStarships(item);
+    })
+    return result;
   }
 
-  getStarship(id) {
-    return this.getResource(`/starships/${id}/`);
+  async getStarship(id) {
+    const starship = await this.getResource(`/starships/${id}/`);
+    return this.transformStarship(starship);
   }
 
-  getVehicles(id) {
-    return this.getResource(`/vehicles/${id}/`);
+  async getAllVehicles() {
+    const resultVehicle = await this.getResource(`/vehicles/`);
+    const result = resultVehicle.results.map((item) => {
+      return this.transformAllVehicles(item);
+    })
+    return result;
   }
 
-  getSpecies(id) {
-    return this.getResource(`/species/${id}/`);
+  async getVehicle(id) {
+    const vehicle = await this.getResource(`/vehicles/${id}/`);
+    return this.transformVehicle(vehicle);
   }
 
-  getFilms(id) {
-    return this.getResource(`/films/${id}/`);
+  async getAllSpecies() {
+    const resultSpecies = await this.getResource(`/species/`);
+    const result = resultSpecies.results.map((item) => {
+      return this.transformAllSpecies(item);
+    })
+    console.log(result)
+    return result;
+  }
+
+  async getSpecies(id) {
+    const species = await this.getResource(`/species/${id}/`);
+    return this.transformSpecies(species);
+  }
+
+  async getAllFilms() {
+    const resultFilms = await this.getResource(`/films/`);
+    const result = resultFilms.results.map((item) => {
+      return this.transformAllFilms(item);
+    })
+    console.log(result)
+    return result;
+  }
+
+  async getFilm(id) {
+    const film = await this.getResource(`/films/${id}/`);
+    return this.transformFilm(film);
   }
 
   async transformPerson(person) {
@@ -201,19 +249,318 @@ export default class SwapiDB {
     }
   }
 
-  transformPlanet(planet) {
+  async transformPlanet(planet) {
+    let residents = await this.fetchUrls(planet.residents);
+    let films = await this.fetchUrls(planet.films);
+    residents = residents.map((item) => {
+      return this.getShortData(item, 'people');
+    });
+    films = residents.map((item) => {
+      return this.getShortData(item, 'films');
+    });
+    return {
+      name: planet.name,
+      id: this.getIdLink(planet.url),
+      details: [{
+          value: planet.name,
+          title: 'Name'
+        },{
+          value: planet.climate,
+          title: 'Climate'
+        },{
+          value: planet.diameter,
+          title: 'Diameter'
+        },{
+          value: films,
+          title: 'Films'
+        },{
+          value: planet.gravity,
+          title: 'Gravity'
+        },{
+          value: planet.orbital_period,
+          title: 'Orbital period'
+        },{
+          value: planet.population,
+          title: 'Population'
+        },{
+          value: residents,
+          title: 'Residents'
+        },{
+          value: planet.rotation_period,
+          title: 'Rotation Period'
+        },{
+          value: planet.surface_water,
+          title: 'Surface Water'
+        },{
+          value: planet.terrain,
+          title: 'Terrain'
+        }
+      ]
+    }
+  }
+
+  transformAllPlanets(planet) {
     return {
       name: planet.name,
       climate: planet.climate,
-      diameter: planet.diameter,
-      films: planet.films,
-      gravity: planet.gravity,
-      orbitalPeriod: planet.orbital_period,
-      rotationPeriod: planet.rotation_period,
-      population: planet.population,
-      residents: planet.residents,
-      surfaceWater: planet.surface_water,
-      terrain: planet.terrain,
+      id: this.getIdLink(planet.url),
+    }
+  }
+
+  async transformStarship(starship) {
+    let films = await this.fetchUrls(starship.films);
+    let pilots = await this.fetchUrls(starship.pilots);
+    films = films.map((item) => {
+      return this.getShortData(item, 'films');
+    });
+    pilots = pilots.map((item) => {
+      return this.getShortData(item, 'peoples');
+    });
+    return {
+      name: starship.name,
+      id: this.getIdLink(starship.url),
+      details: [{
+          value: starship.name,
+          title: 'Name',
+        },{
+          value: starship.MGLT,
+          title: 'MGLT',
+        },{
+          value: starship.cargo_capacity,
+          title: 'Cargo Capacity',
+        },{
+          value: starship.consumables,
+          title: 'Consumables',
+        },{
+          value: starship.cost_in_credits,
+          title: 'Cost In Credits',
+        },{
+          value: starship.crew,
+          title: 'Crew',
+        },{
+          value: starship.hyperdrive_rating,
+          title: 'Hyperdrive Rating',
+        },{
+          value: starship.manufacturer,
+          title: 'Manufacturer',
+        },{
+          value: starship.max_atmosphering_speed,
+          title: 'Max Atmosphering Speed',
+        },{
+          value: starship.model,
+          title: 'Model',
+        },{
+          value: starship.passengers,
+          title: 'Passengers',
+        },{
+          value: films,
+          title: 'Films',
+        },{
+          value: pilots,
+          title: 'Pilots',
+        },{
+          value: starship.starship_class,
+          title: 'Starship Class',
+        }
+      ]
+    }
+  }
+
+  transformAllStarships(starship) {
+    return {
+      name: starship.name,
+      length: starship.length,
+      id: this.getIdLink(starship.url),
+    }
+  }
+
+  async transformVehicle(vehicle) {
+    let films = await this.fetchUrls(vehicle.films);
+    let pilots = await this.fetchUrls(vehicle.pilots);
+    films = films.map((item) => {
+      return this.getShortData(item, 'films');
+    });
+    pilots = pilots.map((item) => {
+      return this.getShortData(item, 'people');
+    });
+    return {
+      name: vehicle.name,
+      id: this.getIdLink(vehicle.url),
+      details: [{
+          value: vehicle.name,
+          title: 'Name',
+        },{
+          value: vehicle.cargo_capacity,
+          title: 'Cargo Capacity',
+        },{
+          value: vehicle.consumables,
+          title: 'Consumables',
+        },{
+          value: vehicle.cost_in_credits,
+          title: 'Cost in Credits',
+        },{
+          value: vehicle.crew,
+          title: 'Crew',
+        },{
+          value: vehicle.length,
+          title: 'Length',
+        },{
+          value: vehicle.manufacturer,
+          title: 'Manufacturer',
+        },{
+          value: vehicle.max_atmosphering_speed,
+          title: 'Max Atmosphering Speed',
+        },{
+          value: vehicle.model,
+          title: 'Model',
+        },{
+          value: vehicle.passengers,
+          title: 'Passengers',
+        },{
+          value: pilots,
+          title: 'Pilots',
+        },{
+          value: films,
+          title: 'Films',
+        },{
+          value: vehicle.vehicle_class,
+          title: 'Vehicle Class',
+        }
+      ]
+    }
+  }
+
+  transformAllVehicles(vehicle) {
+    return {
+      name: vehicle.name,
+      length: vehicle.length,
+      id: this.getIdLink(vehicle.url),
+    }
+  }
+
+  async transformSpecies(species) {
+    let films = await this.fetchUrls(species.films);
+    let people = await this.fetchUrls(species.people);
+    people = people.map((item) => {
+      return this.getShortData(item, 'people');
+    });
+    films = films.map((item) => {
+      return this.getShortData(item, 'films');
+    });
+    const homeworld = await this.fetchUrls([species.homeworld]);
+    return {
+      name: species.name,
+      id: this.getIdLink(species.url),
+      details: [{
+          value: species.name,
+          title: 'Name',
+        },{
+          value: species.average_height,
+          title: 'Average Height',
+        },{
+          value: species.average_lifespan,
+          title: 'Average Lifespan',
+        },{
+          value: species.classification,
+          title: 'Classification',
+        },{
+          value: species.designation,
+          title: 'Designation',
+        },{
+          value: species.eye_colors,
+          title: 'Eye Colors',
+        },{
+          value: species.skin_colors,
+          title: 'Skin Colors',
+        },{
+          value: species.hair_colors,
+          title: 'Hair Colors',
+        },{
+          value: homeworld,
+          title: 'Homeworld',
+        },{
+          value: species.language,
+          title: 'Language',
+        },{
+          value: people,
+          title: 'People',
+        },{
+          value: films,
+          title: 'Films',
+        }
+      ]
+    }
+  }
+
+  transformAllSpecies(species) {
+    return {
+      name: species.name,
+      skinColor: species.skin_colors,
+      id: this.getIdLink(species.url),
+    }
+  }
+
+  async transformFilm(film) {
+    let characters = await this.fetchUrls(film.characters);
+    let starships = await this.fetchUrls(film.starships);
+    let species = await this.fetchUrls(film.species);
+    let vehicles = await this.fetchUrls(film.vehicles);
+    let planets = await this.fetchUrls(film.planets);
+    characters = characters.map((item) => {
+      return this.getShortData(item, 'people');
+    });
+    starships = starships.map((item) => {
+      return this.getShortData(item, 'starships');
+    });
+    species = species.map((item) => {
+      return this.getShortData(item, 'species');
+    });
+    vehicles = vehicles.map((item) => {
+      return this.getShortData(item, 'vehicles');
+    });
+    planets = planets.map((item) => {
+      return this.getShortData(item, 'planets');
+    });
+    return {
+      name: film.title,
+      id: this.getIdLink(film.url),
+      details: [{
+          value: film.title,
+          title: 'Title'
+        },{
+          value: film.director,
+          title: 'Director'
+        },{
+          value: film.producer,
+          title: 'Producer'
+        },{
+          value: film.release_date,
+          title: 'Release Date'
+        },{
+          value: characters,
+          title: 'Characters'
+        },{
+          value: planets,
+          title: 'Planets'
+        },{
+          value: species,
+          title: 'Species'
+        },{
+          value: starships,
+          title: 'Starships'
+        },{
+          value: vehicles,
+          title: 'Vehicles'
+        }
+      ]
+    }
+  }
+
+  transformAllFilms(film) {
+    return {
+      name: film.title,
+      releaseDate: film.release_date,
+      id: this.getIdLink(film.url),
     }
   }
 

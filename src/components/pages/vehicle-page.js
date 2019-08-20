@@ -5,7 +5,7 @@ import ItemDetails from '../item-details';
 import ItemList from '../item-list';
 import SwapiDB from '../../swapi-db';
 
-export default class PeoplePage extends Component {
+export default class VehiclePage extends Component {
   constructor() {
     super();
     this.state = {
@@ -29,19 +29,19 @@ export default class PeoplePage extends Component {
     
     const itemList = (<ItemList 
       onItemSelected={ this.onElemSelected }
-      getData={ this.SwapiDB.getAllPeople }
+      getData={ this.SwapiDB.getAllVehicles }
       renderItem={(item) => {
         return(
           <span className="d-flex justify-content-between">
             <span className="item-title">{ item.name }</span>
-            <span className="item-desc">({ item.gender })</span>
+            <span className="item-desc">({ item.length })</span>
           </span>
         )
     }}/>)
 
     const itemDetails = (<ItemDetails 
       id={ this.state.selectedElem } 
-      getData={ this.SwapiDB.getPerson }
+      getData={ this.SwapiDB.getVehicle }
       />);
 
     return(

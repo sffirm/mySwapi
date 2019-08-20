@@ -8,6 +8,8 @@
   }
   .item-desc{
     margin-right: 10px;
+    display: inline-block;
+    vertical-align: middle;
     a{
       color: rgb(26, 118, 134);
     }
@@ -25,5 +27,8 @@
     padding: 25px 30px;
     font-size: 1.2rem;
     text-align: center;
+  }
+  .list-group-item{
+    max-width: 100%;
   }
 }
