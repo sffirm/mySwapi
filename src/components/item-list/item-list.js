@@ -9,16 +9,24 @@ export default class ItemList extends Component {
     super();
     this.state = {
       itemList: null,
-      loading: false
+      loading: false,
     }
   }
 
   componentDidMount() {
+    this.updateItems();
+  }
+
+  updateItems(url) {
     const { getData } = this.props;
-    getData().then((itemList) => {
+    getData(url).then((itemList) => {
       this.setState({
-        itemList,
-        loading: true
+        itemList: itemList.data,
+        loading: true,
+        paging: {
+          next: itemList.next,
+          prev: itemList.prev,
+        }
       })
     });
   }
@@ -39,8 +47,28 @@ export default class ItemList extends Component {
     });
   }
 
+  renderPaging() {
+    const { prev, next } = this.state.paging;
+    
+    
+    const prevBtn = prev ? <button onClick={ () => { this.updateItems(prev)} } type="button" className="btn btn-light">Prev</button> : null;
+    const nextBtn = next ? <button onClick={ () => { this.updateItems(next)} } type="button" className="btn btn-light">Next</button> : null;
+    
+    return(
+      <div className="item-paging d-flex justify-content-between">
+        <div className="item-btn-contain">
+          { prevBtn }
+        </div>
+        <div className="item-btn-contain">
+          { nextBtn }
+        </div>
+      </div>
+    )
+  }
+
   render() {
-    const { itemList, loading } = this.state;
+    const { itemList, loading, paging } = this.state;
+    let itemPaging = null;
 
     if ( !loading ) {
       return <Preloader />
@@ -49,12 +77,17 @@ export default class ItemList extends Component {
     this.renderItems(itemList);
     const items = this.renderItems(itemList);
 
+    if ( paging ) {
+      itemPaging = this.renderPaging();
+    }
+
 
     return (
       <div className="item-list item-menu">
         <div className="list-group">
           { items }
         </div>
+        { itemPaging }
       </div>
     )
 

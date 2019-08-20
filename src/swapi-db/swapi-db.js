@@ -31,6 +31,7 @@ export default class SwapiDB {
     this.transformAllSpecies = this.transformAllSpecies.bind(this);
     this.transformFilm = this.transformFilm.bind(this);
     this.transformAllFilms = this.transformAllFilms.bind(this);
+    this.getAllBasic = this.getAllBasic.bind(this);
   }
 
   getIdLink(link) {
@@ -83,13 +84,26 @@ export default class SwapiDB {
     ))
   }
 
-  async getAllPeople() {
-    const resultPeople = await this.getResource(`/people/`);
-    const result = resultPeople.results.map((item) => {
-      return this.transformAllPersons(item);
+  async getAllBasic(methodName, rout, url) {
+    let resultItem;
+    if (url) {
+      resultItem = await this.fetchUrls([url]);
+      resultItem = resultItem[0];
+    } else {
+      resultItem = await this.getResource(rout);
+    }
+    let data = resultItem.results.map((item) => {
+      return this[methodName](item);
     })
+    return {
+      data,
+      next: resultItem.next,
+      prev: resultItem.previous,
+    };
+  }
 
-    return await result;
+  async getAllPeople(url) {
+    return await this.getAllBasic('transformAllPersons', '/people/', url);
   }
 
   async getPerson(id) {
@@ -97,12 +111,8 @@ export default class SwapiDB {
     return this.transformPerson(person);
   }
 
-  async getAllPlanets() {
-    const resultPlanet = await this.getResource(`/planets/`);
-    const result = resultPlanet.results.map((item) => {
-      return this.transformAllPlanets(item);
-    })
-    return result;
+  async getAllPlanets(url) {
+    return await this.getAllBasic('transformAllPlanets', '/planets/', url);
   }
 
   async getPlanet(id) {
@@ -110,12 +120,8 @@ export default class SwapiDB {
     return this.transformPlanet(planet);
   }
 
-  async getAllStarships() {
-    const resultStarship = await this.getResource(`/starships/`);
-    const result = resultStarship.results.map((item) => {
-      return this.transformAllStarships(item);
-    })
-    return result;
+  async getAllStarships(url) {
+    return await this.getAllBasic('transformAllStarships', '/starships/', url);
   }
 
   async getStarship(id) {
@@ -123,12 +129,8 @@ export default class SwapiDB {
     return this.transformStarship(starship);
   }
 
-  async getAllVehicles() {
-    const resultVehicle = await this.getResource(`/vehicles/`);
-    const result = resultVehicle.results.map((item) => {
-      return this.transformAllVehicles(item);
-    })
-    return result;
+  async getAllVehicles(url) {
+    return await this.getAllBasic('transformAllVehicles', '/vehicles/', url);
   }
 
   async getVehicle(id) {
@@ -136,12 +138,8 @@ export default class SwapiDB {
     return this.transformVehicle(vehicle);
   }
 
-  async getAllSpecies() {
-    const resultSpecies = await this.getResource(`/species/`);
-    const result = resultSpecies.results.map((item) => {
-      return this.transformAllSpecies(item);
-    })
-    return result;
+  async getAllSpecies(url) {
+    return await this.getAllBasic('transformAllSpecies', '/species/', url);
   }
 
   async getSpecies(id) {
@@ -149,12 +147,8 @@ export default class SwapiDB {
     return this.transformSpecies(species);
   }
 
-  async getAllFilms() {
-    const resultFilms = await this.getResource(`/films/`);
-    const result = resultFilms.results.map((item) => {
-      return this.transformAllFilms(item);
-    })
-    return result;
+  async getAllFilms(url) {
+    return await this.getAllBasic('transformAllFilms', '/films/', url);
   }
 
   async getFilm(id) {
