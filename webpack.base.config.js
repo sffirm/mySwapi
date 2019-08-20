@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 
 const PATHS = {
@@ -50,6 +51,7 @@ module.exports = {
           loader: 'postcss-loader',
           options: { 
             sourceMap: true,
+            minimize: true,
             plugins: function () {
               return [
                 require('autoprefixer')
@@ -69,10 +71,16 @@ module.exports = {
         'css-hot-loader',
         {
           loader: 'css-loader',
-          options: { sourceMap: true }
+          options: { 
+            minimize: true,
+            sourceMap: true 
+          }
         }, {
           loader: 'postcss-loader',
-          options: { sourceMap: true }
+          options: {  
+            minimize: true,
+            sourceMap: true 
+          }
         }
       ]
     }]
@@ -90,5 +98,10 @@ module.exports = {
       { from: `${PATHS.src}/img`, to: `${PATHS.assets}img` },
       { from: `${PATHS.src}/static`, to: '' }
     ])
-  ]
+  ],
+  optimization: {
+    minimizer: [
+      new OptimizeCSSAssetsPlugin({})
+    ]
+  }
 };
