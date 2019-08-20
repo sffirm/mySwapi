@@ -141,7 +141,6 @@ export default class SwapiDB {
     const result = resultSpecies.results.map((item) => {
       return this.transformAllSpecies(item);
     })
-    console.log(result)
     return result;
   }
 
@@ -155,7 +154,6 @@ export default class SwapiDB {
     const result = resultFilms.results.map((item) => {
       return this.transformAllFilms(item);
     })
-    console.log(result)
     return result;
   }
 

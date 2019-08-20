@@ -1,9 +1,51 @@
 import React, {Component} from 'react';
 
+import SwapiDB from '../../swapi-db';
+
 import './header.scss'
 
 export default class Header extends Component {
+
+  constructor() {
+    super();
+    this.state = {
+      data: []
+    }
+    this.SwapiDB = new SwapiDB();
+  }
+
+  componentDidMount() {
+    this.SwapiDB.getResource('/').then((data) => {
+      const array = [];
+      for (let item in data) {
+        array.push(item)
+      }
+      this.setState({
+        data: array
+      })
+    })
+  }
+
+  renderItems(item) {
+    if (item.length === 0) {
+      return null;
+    }
+    return item.map((elem, index) => {
+      let clazz = 'nav-item';
+      return (
+        <li key={ index } className={ clazz }>
+          <a href="#" className="nav-link">{ elem }</a>
+        </li>
+      )
+    })
+  }
+
   render() {
+
+    const { data } = this.state;
+
+    const items = this.renderItems(data);
+
     return (
       <header className="header">
         <div className="container-fluid">
@@ -13,16 +55,8 @@ export default class Header extends Component {
             </div>
             <div className="col-sm-7 col-md-8">
               <nav className="navbar navbar-expand-sm navbar-light">
-                <ul className="navbar-nav">
-                  <li className="nav-item active">
-                    <a href="#" className="nav-link">People</a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="#" className="nav-link">Planets</a>
-                  </li>
-                  <li className="nav-item">
-                    <a href="#" className="nav-link">Starships</a>
-                  </li>
+                <ul className="navbar-nav d-flex justify-content-between">
+                  { items }
                 </ul>
               </nav>
             </div>
