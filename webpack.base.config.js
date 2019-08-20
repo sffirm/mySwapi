@@ -3,8 +3,8 @@ const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-
 
 const PATHS = {
   src: path.join(__dirname, './src'),
@@ -100,8 +100,6 @@ module.exports = {
     ])
   ],
   optimization: {
-    minimizer: [
-      new OptimizeCSSAssetsPlugin({})
-    ]
-  }
+    minimizer: [new TerserPlugin({}), new OptimizeCSSAssetsPlugin({})],
+  },
 };
